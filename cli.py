@@ -7,3 +7,5 @@ key = sys.argv[3] if len(sys.argv) > 3 else None
 
 output = run(name, text, key)
 print(output)
+outpage = open('output.txt','w')
+outpage.write(output)

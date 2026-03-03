@@ -1,5 +1,5 @@
 from registry import TRANSFORMS
-from transforms import reverse, caesar
+from transforms import reverse, caesar, vigenere, formatting
 
 def run(name, text, key=None):
     if name not in TRANSFORMS:
