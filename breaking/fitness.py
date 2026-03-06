@@ -1,5 +1,6 @@
 import string
 from registry import register
+import math
 
 def ord(letter):
     return string.ascii_uppercase.index(letter)
@@ -9,6 +10,9 @@ def chr(index):
 
 QUADRAGRAM_FREQUENCIES = open("breaking\quadragram_freq.txt",'r').read().split('\n')
 MONOGRAM_FREQUENCIES = open("breaking\monogram_freq.txt",'r').read().split('\n')
+for i in range(26):
+    MONOGRAM_FREQUENCIES[i] = int(MONOGRAM_FREQUENCIES[i])
+
 def fitness(text):
     sum_of_scores = 0
     for i in range(len(text)-3):
@@ -16,21 +20,25 @@ def fitness(text):
     return sum_of_scores/(len(text)-3)
 
 def rate(quadgram):
-    scale_factor = 100000
+    scale_factor = 1
     index = ord(quadgram[0])*26**3 + ord(quadgram[1])*26**2 + ord(quadgram[2])*26**1 + ord(quadgram[3])
     rating = scale_factor*float(QUADRAGRAM_FREQUENCIES[index])
     return rating
-
-def rate_mono(letter):
-    scale_factor = 0.00005
-    rating = scale_factor*float(MONOGRAM_FREQUENCIES[ord(letter)])
-    return rating
     
 def monogram_fitness(text):
-    sum_of_scores = 0
-    for i in range(len(text)):
-        sum_of_scores += rate_mono(text[i])
-    return sum_of_scores/(len(text))
+    return cos_angle_vectors(count_monograms(text), MONOGRAM_FREQUENCIES)
+
+def cos_angle_vectors(u, v):
+    dot_product = sum(i*j for i, j in zip(u, v))
+    mag_u = math.sqrt(sum(i**2 for i in u))
+    mag_v = math.sqrt(sum(i**2 for i in v))
+    return dot_product/(mag_u*mag_v)
+
+def count_monograms(text):
+    freq = [0 for a in range(26)]
+    for i in text:
+        freq[ord(i)] += 1
+    return freq
 
 def ioc(text):
     letter_frequencies = [0 for a in range(26)]

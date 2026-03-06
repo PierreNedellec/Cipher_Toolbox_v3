@@ -1,5 +1,6 @@
 import string
 import time
+import math
 
 def ord(letter):
     return string.ascii_uppercase.index(letter)
@@ -19,6 +20,8 @@ def calculate_quad_freqs():
         frequencies[index] += 1
 
     for i in range(26**4):
+        if frequencies[i] != 0: frequencies[i] = math.log(frequencies[i]) 
+        else: frequencies[i] = math.log(0.01)
         frequencies[i] = str(frequencies[i])
 
     filename = "breaking/quadragram_freq.txt"
@@ -38,4 +41,4 @@ def calculate_mono_freqs():
     filename = "breaking/monogram_freq.txt"
     open(filename,'w').write('\n'.join(freq))
 
-calculate_mono_freqs()
+calculate_quad_freqs()
