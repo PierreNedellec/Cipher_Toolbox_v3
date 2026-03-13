@@ -1,5 +1,5 @@
 from registry import TRANSFORMS
-from transforms import reverse, caesar, vigenere, formatting, columnar_transposition
+from transforms import reverse, caesar, vigenere, formatting, columnar_transposition, monoalphabetic_substitution
 from breaking import fitness, caesar_break, vigenere_break
 
 def run(name, text, key=None):
