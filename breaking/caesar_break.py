@@ -9,7 +9,7 @@ def brute_force_caesar(text):
     plaintext = ''
     for key in range(26):
         decrypt = caesar.caesar_decrypt(text, key)
-        fit = fitness.monogram_fitness(decrypt)
+        fit = fitness.fitness(decrypt)
         if fit > best_fitness:
             best_fitness = fit
             best_key = key

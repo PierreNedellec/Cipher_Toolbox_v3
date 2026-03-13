@@ -41,4 +41,39 @@ def calculate_mono_freqs():
     filename = "breaking/monogram_freq.txt"
     open(filename,'w').write('\n'.join(freq))
 
-calculate_quad_freqs()
+def generate_alphabetical_word_list():
+    print('Running...')
+    words = []
+    text = open('breaking/brown_corpus_spaces.txt','r').read().split()
+    one_percent = len(text)//100
+    for w in range(len(text)):
+        if w%one_percent == 0:
+            print(w//one_percent,'% complete')
+        if text[w] not in words:
+            words.append(text[w])
+    words = sorted(words)
+    writeto = open('breaking/words_alphabetical.txt','w')
+    writeto.write('\n'.join(words))
+
+def generate_frequency_word_list():
+    print('Running...')
+    words = {'THE':0}
+    text = open('breaking/brown_corpus_spaces.txt','r').read().split()
+    one_percent = len(text)//100
+    for w in range(len(text)):
+        word = text[w]
+        if w%one_percent == 0:
+            print(w//one_percent,'% complete')
+        if word not in words.keys():
+            words[word] = 0
+        words[text[w]] += 1
+    words_sorted = dict(sorted(words.items(), key=lambda item: item[1], reverse=True))
+    words_list_with_relfreq = []
+    for a in range(len(words_sorted)):
+        item = words_sorted.keys()[a]+' '+str(words_sorted.values()[a]*10000/len(text))
+        words_list_with_relfreq.append(item)
+    writeto = open('breaking/words_frequencywise.txt','w')
+    writeto.write('\n'.join(words_list_with_relfreq))
+
+
+generate_frequency_word_list()
