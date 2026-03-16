@@ -51,9 +51,9 @@ def monosub_hillclimb(text, initial_key=randomkey(), no_improvement_threshold=25
 def key_candidate_gathering(text):
     print('Scanning for candidate keys...')
     child = ['',-1000,randomkey()]
-    restarts = 5
+    restarts = 20
     initial_key = randomkey()
-    no_improvement_threshold = 500
+    no_improvement_threshold = 200
     candidate_keys = {}
     for a in range(restarts):
         parent = ['',-1000,initial_key]
@@ -72,7 +72,7 @@ def key_candidate_gathering(text):
     candidate_keys = dict(sorted(candidate_keys.items(), key=lambda item: item[1],reverse=True))
     print('Candidate keys found:')
     print(candidate_keys)
-    return list(candidate_keys.keys())[:3]
+    return list(candidate_keys.keys())[:5]
 
 def monosub_hillclimb_attack(text):
     candidates = key_candidate_gathering(text)

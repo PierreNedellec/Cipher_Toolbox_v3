@@ -19,19 +19,18 @@ def vigenere_break_given_keysize(text, keysize):
 
     for j in range(keysize):
         slice = ciphertext_slices[j]
-        solved = caesar_break.brute_force_caesar(slice)
+        solved = caesar_break.brute_force_caesar_monogram_freq_attack(slice)
         plaintext_slices[j] = list(solved[0])
         key[j] = fitness.chr(solved[1])
 
     plaintext = ''
     for i in range(len(text)):
         plaintext += plaintext_slices[i%keysize].pop(0)
-
     return plaintext, key, fitness.fitness(plaintext)
 
 def possible_keyword_lengths(text):
     return_top_n = 20
-    significance = 20 #minimum number of times the keyword must appear. lower= more calculation
+    significance = 2 #minimum number of times the keyword must appear. lower= more calculation
     longest_keyword = len(text)//significance
     lengths_iocs = [0 for a in range(longest_keyword)]
     for keyword_length in range(longest_keyword):
@@ -40,7 +39,7 @@ def possible_keyword_lengths(text):
     accepted_iocs = []
     keysizes = []
     for ioc in lengths_iocs:
-        if ioc < 0.075 and ioc > 0.055:
+        if ioc < 0.085 and ioc > 0.050:
             accepted_iocs.append(ioc)
             keysizes.append(lengths_iocs.index(ioc)+1) #+1 because the list is 0 indexed
     if len(set(accepted_iocs)) < len(accepted_iocs):

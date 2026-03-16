@@ -75,5 +75,14 @@ def generate_frequency_word_list():
     writeto = open('breaking/words_frequencywise.txt','w')
     writeto.write('\n'.join(words_list_with_relfreq))
 
+def find_signature_of_english():
+    freq = open('breaking/monogram_freq.txt','r').read().split()
+    total = 0
+    for val in freq:
+        total += int(val)
+    for i in range(26):
+        freq[i] = int(freq[i])/total
+    print(sorted(freq,reverse=True))
 
-calculate_quad_freqs()
+
+find_signature_of_english()

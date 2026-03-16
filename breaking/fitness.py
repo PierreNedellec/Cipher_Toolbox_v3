@@ -54,6 +54,10 @@ def ioc(text):
     ioc = ioc_sum/(length*(length-1))
     return ioc
 
+def length(text):
+    return len(text)
+
+register("length",length)
 register("ioc",ioc)
 register("fitness",fitness)
 register("monogram_fitness",monogram_fitness)
