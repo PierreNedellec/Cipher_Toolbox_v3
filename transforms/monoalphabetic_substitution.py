@@ -4,7 +4,7 @@ from transforms.caesar import ord, chr
 
 
 def monosub_encrypt(text, key):
-    if len(set(list(key))) != 26:
+    if len(set(list(key))) != 26 or len(key) != 26:
         raise ValueError("Key in monoalphabetic substitution must have 26 letters, which are all unique.")
     key_lookup = {}
     result = ''
@@ -31,9 +31,24 @@ def inverse_key(key):
         letter = key[i]
         inverse[ord(letter)] = chr(i)
     return ''.join(inverse)
+
+def remove_duplicates(word):
+    valid = []
+    for letter in word:
+        if letter not in valid:
+            valid.append(letter)
+    return ''.join(valid)
+
+def generate_key(keyword):
+    alphabet = string.ascii_uppercase
+    key = remove_duplicates(keyword)
+    last_letter_index = ord(key[-1])
+    alphabet = alphabet[last_letter_index:] + alphabet[:last_letter_index]
+    return remove_duplicates(key+alphabet)
         
 
 
 register("monosub_encrypt",monosub_encrypt)
 register("monosub_decrypt",monosub_decrypt)
 register("monosub_inverse_key", inverse_key)
+register("monosub_gen_key",generate_key)

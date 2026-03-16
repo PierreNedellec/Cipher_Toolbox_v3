@@ -14,14 +14,14 @@ def calculate_quad_freqs():
     print('corpus length=',len(corpus))
     time.sleep(2)
     for a in range(0,len(corpus)-4):
-        if a%10000 == 0:
+        if a%100000 == 0:
             print(a)
         index = ord(corpus[a])*26**3 + ord(corpus[a+1])*26**2 + ord(corpus[a+2])*26**1 + ord(corpus[a+3])
         frequencies[index] += 1
 
     for i in range(26**4):
         if frequencies[i] != 0: frequencies[i] = math.log(frequencies[i]) 
-        else: frequencies[i] = math.log(0.01)
+        else: frequencies[i] = math.log(0.0001)
         frequencies[i] = str(frequencies[i])
 
     filename = "breaking/quadragram_freq.txt"
@@ -76,4 +76,4 @@ def generate_frequency_word_list():
     writeto.write('\n'.join(words_list_with_relfreq))
 
 
-generate_frequency_word_list()
+calculate_quad_freqs()
