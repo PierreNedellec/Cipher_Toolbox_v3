@@ -1,4 +1,4 @@
-from breaking.fitness import ord,chr
+from breaking.fitness import ord,chr,ioc
 from breaking.vigenere_break import vigenere_slices
 import matplotlib.pyplot as plt
 from registry import register
@@ -23,31 +23,49 @@ def twist(sig):
         twist_value += (sig2[i]-sig1[i])
     return twist_value
 
-def average_signatures(signatures):
+def average_signature(text, period):
+    slices = vigenere_slices(text, period)
+    signatures = []
+    for slice in slices:
+        signatures.append(signature(slice))
+
     avg_signature = [0 for a in range(26)]
+
     for i in range(26):
         for sig in range(len(signatures)):
             avg_signature[i] += signatures[sig][i]
         avg_signature[i]/=len(signatures)
     return avg_signature
 
+def average_ioc(text, period):
+    avg = 0
+    slices = vigenere_slices(text, period)
+    for slice in slices:
+        avg += ioc(''.join(slice))/len(slices)
+    return avg    
+
 def find_keysize(text):
     keysize_used = []
     resultant_twist = []
-    maximum_keyword_length = min(50,len(text))
+    resultant_ioc = []
+    maximum_keyword_length = min(50,len(text)//2)
+
     for keysize in range(1,maximum_keyword_length):
         print('Testing keysize',keysize,'...')
-        slices = vigenere_slices(text,keysize)
-        signatures = []
-        for slice in slices:
-            signatures.append(signature(slice))
-        avg = average_signatures(signatures)
-        twisted = twist(avg)
+        avg_ioc = average_ioc(text, keysize)
+        avg_signature = average_signature(text,keysize)
+
         keysize_used.append(keysize)
-        resultant_twist.append(twisted)
-    plt.bar(keysize_used,resultant_twist)
+        resultant_twist.append(twist(avg_signature))
+        resultant_ioc.append(avg_ioc)
+    
+    fig, (ax1,ax2) = plt.subplots(1,2,figsize=(12,4))
+    ax1.bar(keysize_used,resultant_twist)
+    ax1.set_title("Twist from different periods")
+    ax2.bar(keysize_used,resultant_ioc)
+    ax2.set_title("Index of coincidence from different periods")
     plt.show()
 
 register("signature",signature)
 register("twist",twist)
-register("twist_keysize",find_keysize)
+register("inspect_period",find_keysize)

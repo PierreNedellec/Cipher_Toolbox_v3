@@ -1,7 +1,9 @@
 from transforms import caesar
+from transforms.vigenere import vigenere_decrypt,vigenere_encrypt
 from breaking import fitness, caesar_break
 from misc import pretty_print
 from registry import register
+import random
 
 def vigenere_slices(text, keysize):
     slices = [[] for a in range(keysize)]
@@ -11,6 +13,7 @@ def vigenere_slices(text, keysize):
 
 
 def vigenere_break_given_keysize(text, keysize):
+    # Uses monoalphabetic fitness
     keysize = int(keysize)
     plaintext_slices = [[] for b in range(keysize)]
     key = ['' for a in range(keysize)]
@@ -67,6 +70,32 @@ def auto_break(text):
             best_fitness = fit
     return best_plaintext, best_key, best_fitness
 
-register("vigenere_break_given_keysize",vigenere_break_given_keysize)
-register("vigenere_determine_keysize", possible_keyword_lengths)
+def tick_key(keyword,index):
+    key = list(keyword)
+    new = (ord(key[index])+ random.randint(1,25))
+    if new > ord("Z"):
+        new -= 26
+    key[index] = chr(new)
+    return "".join(key)
+
+def vigenere_break_single_period(text, period):
+    # Uses quadragram fitess
+    period = int(period)
+    parent = ['',-1000,"A"*period]
+    child = ['','','']
+    iterations = 0
+    no_improvement_counter = 0
+    while no_improvement_counter < 3000:
+        child[2] = tick_key(parent[2],iterations%period)
+        child[0] = vigenere_decrypt(text,child[2])
+        child[1] = fitness.fitness(child[0])
+        if child[1] > parent[1]:
+            parent = child.copy()
+            no_improvement_counter = 0
+        iterations += 1
+        no_improvement_counter += 1
+    return parent
+
+register("vigenere_break_single_period",vigenere_break_single_period)
 register("vigenere_break", auto_break)
+
