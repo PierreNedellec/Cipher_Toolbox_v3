@@ -21,9 +21,4 @@ def polyalphabetic_decrypt(text = str, alphabets = list):
         plaintext += deciphered_letter
     return plaintext
 
-def add_letters(letter1,letter2):
-    result = ord(letter1)+ord(letter2)
-    if result > ord("Z"):
-        result -= 26
-    return chr(result)
 

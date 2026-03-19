@@ -50,7 +50,16 @@ def beaufort_decrypt(text,keyword):
     text = atbash(text)
     return vigenere_decrypt(text,keyword)
 
+def variant_beaufort_encrypt(text,keyword):
+    return vigenere_decrypt(text,keyword)
+
+def variant_beaufort_decrypt(text,keyword):
+    return vigenere_encrypt(text,keyword)
+
+
 register("vigenere_encrypt",vigenere_encrypt)
 register("vigenere_decrypt",vigenere_decrypt)
 register("beaufort_encrypt",beaufort_encrypt)
 register("beaufort_decrypt",beaufort_decrypt)
+register("variant_beaufort_encrypt",variant_beaufort_encrypt)
+register("variant_beaufort_decrypt",variant_beaufort_decrypt)

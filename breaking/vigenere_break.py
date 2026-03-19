@@ -1,6 +1,7 @@
 from transforms import caesar
 from breaking.attacks import dictionary_attack
-from transforms.vigenere import vigenere_decrypt,vigenere_encrypt
+from transforms.vigenere import vigenere_decrypt, beaufort_decrypt, variant_beaufort_decrypt
+from transforms.monoalphabetic_substitution import atbash
 from breaking import fitness, caesar_break
 from misc import pretty_print
 from registry import register
@@ -13,7 +14,7 @@ def vigenere_slices(text, keysize):
     return slices
 
 
-def vigenere_break_given_keysize(text, keysize):
+def vigenere_break_given_period_monoalphabetic_fitness(text, keysize):
     # Uses monoalphabetic fitness
     keysize = int(keysize)
     plaintext_slices = [[] for b in range(keysize)]
@@ -32,9 +33,22 @@ def vigenere_break_given_keysize(text, keysize):
         plaintext += plaintext_slices[i%keysize].pop(0)
     return plaintext, key, fitness.fitness(plaintext)
 
+def auto_break(text):
+    keysizes, iocs = possible_keyword_lengths(text)
+    best_fitness = -1000
+    for size in keysizes:
+        print("Breaking keysize",size)
+        plaintext, key, fit = vigenere_break_given_period_monoalphabetic_fitness(text, size)
+        print("Fitness found:",fit)
+        if best_fitness < fit:
+            best_plaintext = plaintext
+            best_key = key
+            best_fitness = fit
+    return best_plaintext, "".join(best_key), best_fitness
+
 def possible_keyword_lengths(text):
     return_top_n = 20
-    significance = 2 #minimum number of times the keyword must appear. lower= more calculation
+    significance = 10 #minimum number of times the keyword must appear. lower= more calculation
     longest_keyword = len(text)//significance
     lengths_iocs = [0 for a in range(longest_keyword)]
     for keyword_length in range(longest_keyword):
@@ -58,18 +72,7 @@ def avg_ioc_of_slices(text, keylength):
         avg += fitness.ioc(''.join(slice))/len(slices)
     return avg
 
-def auto_break(text):
-    keysizes, iocs = possible_keyword_lengths(text)
-    best_fitness = -1000
-    for size in keysizes:
-        print("Breaking keysize",size)
-        plaintext, key, fit = vigenere_break_given_keysize(text, size)
-        print("Fitness found:",fit)
-        if best_fitness < fit:
-            best_plaintext = plaintext
-            best_key = key
-            best_fitness = fit
-    return best_plaintext, best_key, best_fitness
+
 
 def tick_key(keyword,index):
     key = list(keyword)
@@ -100,7 +103,28 @@ def vigenere_break_single_period(text, period):
 def vigenere_dictionary_attack(text):
     return dictionary_attack(text,vigenere_decrypt)
 
-register("vigenere_break_single_period",vigenere_break_single_period)
+def beaufort_dictionary_attack(text):
+    return dictionary_attack(text, beaufort_decrypt)
+
+def beaufort_break_given_period(text,period):
+    text= atbash(text)
+    result = vigenere_break_single_period(text,period)
+    result[2] = atbash(result[2])
+    return result
+
+
+def variant_beaufort_break_given_period(text,period):
+    result = vigenere_break_single_period(text,period)
+    result[2] = caesar.caesar_encrypt(atbash(result[2]),1)
+    return result
+
+def variant_beaufort_dictionary(text):
+    return dictionary_attack(text, variant_beaufort_decrypt)
+
+register("vigenere_break_given_period",vigenere_break_single_period)
 register("vigenere_break", auto_break)
 register("vigenere_dictionary",vigenere_dictionary_attack)
-
+register("beaufort_break_given_period",beaufort_break_given_period)
+register("beaufort_dictionary",beaufort_dictionary_attack)
+register("variant_beaufort_break_given_period",variant_beaufort_break_given_period)
+register("variant_beaufort_dictionary",variant_beaufort_dictionary)
