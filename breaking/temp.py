@@ -85,4 +85,4 @@ def find_signature_of_english():
     print(sorted(freq,reverse=True))
 
 
-find_signature_of_english()
+generate_alphabetical_word_list()

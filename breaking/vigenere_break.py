@@ -1,4 +1,5 @@
 from transforms import caesar
+from breaking.attacks import dictionary_attack
 from transforms.vigenere import vigenere_decrypt,vigenere_encrypt
 from breaking import fitness, caesar_break
 from misc import pretty_print
@@ -96,6 +97,10 @@ def vigenere_break_single_period(text, period):
         no_improvement_counter += 1
     return parent
 
+def vigenere_dictionary_attack(text):
+    return dictionary_attack(text,vigenere_decrypt)
+
 register("vigenere_break_single_period",vigenere_break_single_period)
 register("vigenere_break", auto_break)
+register("vigenere_dictionary",vigenere_dictionary_attack)
 

@@ -45,6 +45,9 @@ def generate_key(keyword):
     last_letter_index = ord(key[-1])
     alphabet = alphabet[last_letter_index:] + alphabet[:last_letter_index]
     return remove_duplicates(key+alphabet)
+
+def atbash(text):
+    return monosub_encrypt(text, "ZYXWVUTSRQPONMLKJIHGFEDCBA")
         
 
 
@@ -52,3 +55,4 @@ register("monosub_encrypt",monosub_encrypt)
 register("monosub_decrypt",monosub_decrypt)
 register("monosub_inverse_key", inverse_key)
 register("monosub_gen_key",generate_key)
+register("atbash",atbash)

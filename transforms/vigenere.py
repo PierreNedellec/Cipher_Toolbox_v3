@@ -1,16 +1,11 @@
 from registry import register
+from transforms.monoalphabetic_substitution import atbash
 import string
 
 def inalpha(letter):
     if letter in string.ascii_uppercase:
         return True
     return False
-
-def ord(letter):
-    return string.ascii_uppercase.index(letter)
-
-def chr(index):
-    return string.ascii_uppercase[index]
 
 def cycle(keyword_letters):
     end = keyword_letters.pop(0)
@@ -21,7 +16,10 @@ def vigenere_encrypt(text, keyword):
     result = ""
     for c in text:
         if inalpha(c):
-            result += chr((ord(c) + ord(keyword[0])) % 26 )
+            new_order = (ord(c) + (ord(keyword[0]) - ord("A")))
+            if new_order > ord("Z"):
+                new_order -= 26
+            result += chr(new_order)
             cycle(keyword)
         else:
             result += c
@@ -33,11 +31,26 @@ def vigenere_decrypt(text, keyword):
     result = ""
     for c in text:
         if inalpha(c):
-            result += chr((ord(c) - ord(keyword[0])) % 26 )
+            new_order = (ord(c) - (ord(keyword[0]) - ord("A")))
+            if new_order < ord("A"):
+                new_order += 26
+            result += chr(new_order)
             cycle(keyword)
         else:
             result += c
     return result
 
+def beaufort_encrypt(text,keyword):
+    keyword = atbash(keyword)
+    text = atbash(text)
+    return vigenere_encrypt(text,keyword)
+
+def beaufort_decrypt(text,keyword):
+    keyword = atbash(keyword)
+    text = atbash(text)
+    return vigenere_decrypt(text,keyword)
+
 register("vigenere_encrypt",vigenere_encrypt)
 register("vigenere_decrypt",vigenere_decrypt)
+register("beaufort_encrypt",beaufort_encrypt)
+register("beaufort_decrypt",beaufort_decrypt)
