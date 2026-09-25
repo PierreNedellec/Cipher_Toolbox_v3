@@ -72,6 +72,28 @@ def column_decrypt(ciphertext, key):
             if row < len(columns[column]):
                 plaintext += columns[column][row]
     return plaintext
+
+def column_decrypt_from_perm(ciphertext, permutation):
+    width = len(permutation)
+    height = math.ceil(len(ciphertext) / width)
+    full_columns = len(ciphertext)%len(permutation)
+    columns = ['' for a in range(width)]
+
+    index = 0
+    for p in permutation:
+        column_length = height
+        if p >= full_columns:
+            column_length = height - 1
+        columns[p] = ciphertext[index : index + column_length]
+        index = index + column_length
+
+    plaintext = ""
+
+    for row in range(height):
+        for column in range(width):
+            if row < len(columns[column]):
+                plaintext += columns[column][row]
+    return plaintext
     
 
 register("column_encrypt",column_encrypt)
