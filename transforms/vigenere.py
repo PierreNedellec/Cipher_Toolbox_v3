@@ -45,10 +45,8 @@ def beaufort_encrypt(text,keyword):
     text = atbash(text)
     return vigenere_encrypt(text,keyword)
 
-def beaufort_decrypt(text,keyword):
-    keyword = atbash(keyword)
-    text = atbash(text)
-    return vigenere_decrypt(text,keyword)
+# Beaufort is a reciprocal cipher: encipherment and decipherment are the same operation.
+beaufort_decrypt = beaufort_encrypt
 
 def variant_beaufort_encrypt(text,keyword):
     return vigenere_decrypt(text,keyword)

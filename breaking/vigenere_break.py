@@ -113,7 +113,7 @@ def beaufort_dictionary_attack(text):
 def beaufort_break_given_period(text,period):
     text= atbash(text)
     result = vigenere_break_single_period(text,period)
-    result[2] = atbash(result[2])
+    result[2] = caesar.caesar_decrypt(result[2],1)
     return result
 
 
