@@ -35,6 +35,8 @@ def vigenere_break_given_period_monoalphabetic_fitness(text, keysize):
 
 def auto_break(text):
     keysizes, iocs = possible_keyword_lengths(text)
+    best_plaintext = None
+    best_key = None
     best_fitness = -1000
     for size in keysizes:
         print("Breaking keysize",size)
@@ -44,6 +46,8 @@ def auto_break(text):
             best_plaintext = plaintext
             best_key = key
             best_fitness = fit
+    if best_plaintext is None:
+        raise ValueError("No plausible key length found for this ciphertext. Try a longer ciphertext or use vigenere_break_given_period with a known key length.")
     return best_plaintext, "".join(best_key), best_fitness
 
 def possible_keyword_lengths(text):

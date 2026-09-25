@@ -53,7 +53,7 @@ def column_encrypt(text, keyword):
 def column_decrypt(ciphertext, key):
     width = len(key)
     height = math.ceil(len(ciphertext) / width)
-    full_columns = len(ciphertext)%len(key)
+    full_columns = len(ciphertext)%len(key) or width
     permutation = keyword_to_permutation(key)
     columns = ['' for a in range(width)]
 
@@ -76,7 +76,7 @@ def column_decrypt(ciphertext, key):
 def column_decrypt_from_perm(ciphertext, permutation):
     width = len(permutation)
     height = math.ceil(len(ciphertext) / width)
-    full_columns = len(ciphertext)%len(permutation)
+    full_columns = len(ciphertext)%len(permutation) or width
     columns = ['' for a in range(width)]
 
     index = 0
